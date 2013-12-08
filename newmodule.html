@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body>
+    <h1>Welcome {{userfullname}}</h1>
+    <h2>Add Modoule</h2>
+     <form method="post" action="/newmodule">
+    <input type="file" name="file" />
+    <input type="submit" value="Upload" />
+  </form>
+
+  </body>
+</html>
+{% endautoescape %}
