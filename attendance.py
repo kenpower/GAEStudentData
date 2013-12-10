@@ -120,10 +120,14 @@ class MainPage(webapp2.RequestHandler):
 class CreateUser(webapp2.RequestHandler):
     #called when google redirects from it authorisation page with an oauth code
     def get(self):
+
+        #debug stuff
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write(self.request.get('code'))
         self.response.out.write(self.request.get('state'))
         
+
+        #get an access token and a refresh token for thsi users   
         query_params = {    'client_id': CLIENT_ID,
                             'code':self.request.get('code'),
                             'client_secret': CLIENT_SECRET,
@@ -131,18 +135,18 @@ class CreateUser(webapp2.RequestHandler):
                             'grant_type':'authorization_code'}
 
         url_values = urllib.urlencode(query_params)
-       
+        
         f = urllib.urlopen(GOOGLE_TOKEN_URL,url_values)
         data=f.read()
-        self.response.out.write("\n"+data)
-        response_data=json.loads(data)
+        self.response.out.write("\n"+data) #debug
+        response_data=json.loads(data) # convert response to py object
 
-        
+        #create a new user
         thisUser=User(user_id=users.get_current_user().user_id(),
             user=users.get_current_user(),
             refresh_token=response_data['refresh_token'],
             access_token=response_data['access_token'],
-            token_expiry_date=datetime.datetime.now()+datetime.timedelta(0,response_data['expires_in']))
+            token_expiry_date=datetime.datetime.now()+datetime.timedelta(0,response_data['expires_in']-60))
 
         thisUser.put()
         
